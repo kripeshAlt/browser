@@ -18,17 +18,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     fonts-liberation \
     fonts-noto \
+    dos2unix \
     && rm -rf /var/lib/apt/lists/*
 
-# Create a non-root user
 RUN useradd -m -s /bin/bash browser
 
 COPY start.sh /start.sh
-RUN chmod +x /start.sh && chown browser:browser /start.sh
+
+RUN dos2unix /start.sh \
+    && chmod +x /start.sh \
+    && chown browser:browser /start.sh
 
 USER browser
 WORKDIR /home/browser
 
 EXPOSE 10000
 
-CMD ["/start.sh"]
+CMD ["/bin/bash", "/start.sh"]
