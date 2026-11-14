@@ -1,37 +1,12 @@
 
-FROM debian:bookworm-slim
+FROM lscr.io/linuxserver/firefox:1159.0.1
 
-ENV DEBIAN_FRONTEND=noninteractive
-ENV DISPLAY=:99
-ENV RESOLUTION=1024x768x16
-ENV PORT=10000
+ENV PUID=1000
+ENV PGID=1000
+ENV TZ=Etc/UTC
+ENV CUSTOM_USER=browser
+ENV PASSWORD=change-this-password
+ENV FIREFOX_CLI=about:blank
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    chromium \
-    xvfb \
-    openbox \
-    x11vnc \
-    x11-utils \
-    novnc \
-    websockify \
-    dbus-x11 \
-    ca-certificates \
-    fonts-liberation \
-    fonts-noto \
-    dos2unix \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN useradd -m -s /bin/bash browser
-
-COPY start.sh /start.sh
-
-RUN dos2unix /start.sh \
-    && chmod +x /start.sh \
-    && chown browser:browser /start.sh
-
-USER browser
-WORKDIR /home/browser
-
-EXPOSE 10000
-
-CMD ["/bin/bash", "/start.sh"]
+EXPOSE 3000
+EXPOSE 3001
